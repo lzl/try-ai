@@ -4,6 +4,9 @@
 import * as React from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
+const DEFAULT_FONT_SIZE = '16px'
+const DEFAULT_LINE_HEIGHT = '24px'
+
 function useSubmitHandler(
   submitKey:
     | 'Enter'
@@ -54,15 +57,19 @@ function useSubmitHandler(
   }
 }
 
-function getOrCreateMeasureDom(id: string, init?: (dom: HTMLElement) => void) {
+function getOrCreateMeasureDom(
+  defaultDom: HTMLElement,
+  id: string,
+  init?: (dom: HTMLElement) => void
+) {
   let dom = document.getElementById(id)
 
   if (!dom) {
     dom = document.createElement('span')
     dom.style.position = 'absolute'
     dom.style.wordBreak = 'break-word'
-    dom.style.fontSize = '14px'
-    dom.style.lineHeight = '24px'
+    dom.style.fontSize = defaultDom.style.fontSize || DEFAULT_FONT_SIZE
+    dom.style.lineHeight = defaultDom.style.lineHeight || DEFAULT_LINE_HEIGHT
     dom.style.transform = 'translateY(-200vh)'
     dom.style.pointerEvents = 'none'
     dom.style.opacity = '0'
@@ -83,24 +90,31 @@ function getDomContentWidth(dom: HTMLElement) {
 }
 
 function autoGrowTextArea(dom: HTMLTextAreaElement) {
-  const measureDom = getOrCreateMeasureDom('__measure')
-  const singleLineDom = getOrCreateMeasureDom('__single_measure', (dom) => {
-    dom.innerText = 'TEXT_FOR_MEASURE'
-  })
+  const measureDom = getOrCreateMeasureDom(dom, '__measure')
+  const singleLineDom = getOrCreateMeasureDom(
+    dom,
+    '__single_measure',
+    (dom) => {
+      dom.innerText = 'TEXT_FOR_MEASURE'
+    }
+  )
 
   const width = getDomContentWidth(dom)
   measureDom.style.width = width + 'px'
   measureDom.innerText = dom.value !== '' ? dom.value : '1'
-  measureDom.style.fontSize = dom.style.fontSize
+  measureDom.style.fontSize = dom.style.fontSize || DEFAULT_FONT_SIZE
+  measureDom.style.lineHeight = dom.style.lineHeight || DEFAULT_LINE_HEIGHT
   const endWithEmptyLine = dom.value.endsWith('\n')
-  const height = parseFloat(window.getComputedStyle(measureDom).height)
+  const height = Math.max(
+    parseFloat(window.getComputedStyle(measureDom).height),
+    +measureDom.style.lineHeight.replace('px', '')
+  )
   const singleLineHeight = parseFloat(
     window.getComputedStyle(singleLineDom).height
   )
 
   const rows =
     Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0)
-
   return rows
 }
 
@@ -159,6 +173,7 @@ export default function TextareaAutosize({
       onKeyDown={onInputKeyDown}
       rows={inputRows}
       autoFocus={true}
+      style={{ fontSize: DEFAULT_FONT_SIZE, lineHeight: DEFAULT_LINE_HEIGHT }}
     />
   )
 }
