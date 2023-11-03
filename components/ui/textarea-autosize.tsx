@@ -104,7 +104,9 @@ function autoGrowTextArea(dom: HTMLTextAreaElement) {
   measureDom.innerText = dom.value !== '' ? dom.value : '1'
   measureDom.style.fontSize = dom.style.fontSize || DEFAULT_FONT_SIZE
   measureDom.style.lineHeight = dom.style.lineHeight || DEFAULT_LINE_HEIGHT
-  const endWithEmptyLine = dom.value.endsWith('\n')
+  const valueArr = dom.value.split('\n')
+  const valueArrLen = valueArr.length
+  const endWithEmptyLine = valueArrLen > 1 && !valueArr[valueArrLen - 1].trim()
   const height = Math.max(
     parseFloat(window.getComputedStyle(measureDom).height),
     +measureDom.style.lineHeight.replace('px', '')
