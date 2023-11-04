@@ -1,5 +1,3 @@
-'use client'
-
 // code copy from https://github.com/Yidadaa/ChatGPT-Next-Web/blob/b90dfb48ee0446fdcb567dae2b77220508f62f0d/app/components/chat.tsx
 import * as React from 'react'
 
@@ -135,33 +133,29 @@ function useInputRows(
 }
 
 interface IProps {
-  value: string
-  setValue: (value: string) => void
+  input: string
+  onInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
   onSubmit: (content: string) => void
 }
 
-export default function TextareaAutosize({
-  value,
-  setValue,
-  onSubmit,
-}: IProps) {
+export default function TextareaAutosize({ input, onInput, onSubmit }: IProps) {
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
   const { shouldSubmit } = useSubmitHandler()
-  const inputRows = useInputRows(inputRef, value)
+  const inputRows = useInputRows(inputRef, input)
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (shouldSubmit(e)) {
       e.preventDefault()
-      onSubmit(value)
+      onSubmit(input)
     }
   }
 
   return (
     <textarea
       ref={inputRef}
-      className="w-full resize-none rounded-md border border-gray-300 p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-      value={value}
-      onInput={(e) => setValue(e.currentTarget.value)}
+      className="w-full resize-none rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+      value={input}
+      onInput={onInput}
       onKeyDown={onInputKeyDown}
       rows={inputRows}
       autoFocus={true}
