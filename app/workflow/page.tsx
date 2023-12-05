@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Message } from 'ai'
 import { useChat } from 'ai/react'
+import { useImmer } from 'use-immer'
 
 import { IConfig } from '@/lib/types'
 import { getCode } from '@/lib/utils'
@@ -14,7 +15,7 @@ const code = getCode()
 
 export default function Page() {
   return (
-    <div className="max-w-lg p-4">
+    <div className="p-4">
       <Chat />
     </div>
   )
@@ -100,7 +101,8 @@ here is the rules:
 }
 
 function Chat() {
-  const [config, setConfig] = React.useState(CONFIG)
+  const [config, setConfig] = useImmer(CONFIG)
+  console.log('config:', config)
 
   const { messages, input, handleInputChange, append, setInput, isLoading } =
     useChat({
@@ -115,16 +117,53 @@ function Chat() {
       },
     })
 
+  const latestAssistantResponse = React.useMemo(() => {
+    const f = messages.filter((m) => m.role === 'assistant')
+    return f[f.length - 1]?.content
+  }, [messages])
+
+  React.useEffect(() => {
+    const json = safePartialParse(latestAssistantResponse)
+    if (json) {
+      const { variables, done } = json
+      if (variables && variables.length > 0) {
+        setConfig((draft) => {
+          variables.forEach((v: any) => {
+            const idx = draft.variables.findIndex((c) => c.key === v.key)
+            if (idx > -1) {
+              draft.variables[idx].value = v.value
+            }
+          })
+        })
+      }
+      if (done) {
+        setConfig((draft) => {
+          const idx = draft.workflow.findIndex((w) => !w.done)
+          if (idx > -1) {
+            draft.workflow[idx].done = true
+          }
+        })
+      }
+    }
+  }, [latestAssistantResponse, setConfig])
+
   return (
-    <div className="flex flex-col gap-4 rounded-md border p-4">
-      <ChatInput
-        input={input}
-        handleInputChange={handleInputChange}
-        append={append}
-        setInput={setInput}
-        isLoading={isLoading}
-      />
-      <ChatList messages={messages} />
+    <div className="flex gap-4">
+      <div className="flex flex-1 shrink-0 flex-col gap-4 rounded-md border p-4">
+        <ChatInput
+          input={input}
+          handleInputChange={handleInputChange}
+          append={append}
+          setInput={setInput}
+          isLoading={isLoading}
+        />
+        <ChatList messages={messages} />
+      </div>
+      <div className="max-w-sm border p-4">
+        <pre className="overflow-auto">
+          {JSON.stringify(config.variables, null, 2)}
+        </pre>
+      </div>
     </div>
   )
 }
@@ -151,7 +190,9 @@ function ChatContent({ content }: { content: any }) {
 
   if (json) {
     const { assistant_response } = json
-    return <Markdown>{assistant_response}</Markdown>
+    if (assistant_response) {
+      return <Markdown>{assistant_response}</Markdown>
+    }
   }
 
   return <Markdown>{content}</Markdown>

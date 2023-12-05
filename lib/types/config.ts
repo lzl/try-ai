@@ -13,4 +13,5 @@ export interface IVariable {
 export interface IStep {
   system_prompt: string
   required_variables?: string[]
+  done?: boolean
 }
