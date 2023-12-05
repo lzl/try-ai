@@ -35,19 +35,22 @@ export async function POST(req: NextRequest) {
 
     const currentStep = workflow[0]
     if (currentStep.system_prompt) {
-      let variables_text = ''
-      if (currentStep.required_variables) {
-        currentStep.required_variables.forEach((key) => {
-          const variable = variables.find((v) => v.key === key)
-          if (variable) {
-            variables_text += `variable name: ${variable.key}\nvariable description: ${variable.description}\nvariable value: ${variable.value}\n\n`
-          }
-        })
-      }
-      console.log('variables_text:', variables_text)
       let instruction = `${currentStep.system_prompt}`
-      if (variables_text) {
-        instruction += `\n\n<required_variables>${variables_text}</required_variables>`
+      if (currentStep.system_prompt.includes('{required_variables}')) {
+        let variables_text = ''
+        if (currentStep.required_variables) {
+          const required_variables = variables.filter(
+            (v) => currentStep.required_variables?.includes(v.key)
+          )
+          variables_text += `${JSON.stringify(required_variables)}`
+        }
+        console.log('variables_text:', variables_text)
+        if (variables_text) {
+          instruction = instruction.replace(
+            '{required_variables}',
+            variables_text
+          )
+        }
       }
       console.log('instruction:', instruction)
       systemMessages.push({

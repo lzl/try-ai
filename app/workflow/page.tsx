@@ -68,9 +68,10 @@ Step 4 - Identify the position information input by the user in the first step, 
 Step 5 - Guide the user to choose the number of questions, with the options being 5 questions (about 5-8 minutes), 8 questions (about 8-12 minutes), 10 questions (about 12-15 minutes), or 15 questions (about 15-20 minutes). The user must select one option to proceed to the next step.
 Step 6 - Guide the user to choose the difficulty level of the questions, with options being junior, intermediate, and senior. The user must select one option to move to the next step.
 Step 7 - Guide the user to choose the interviewer's interviewing style, with options being friendly and open, or formal and rigorous. The user must select one option to proceed to the next step.
-Step 8 - After completing the above 7 steps, summarize the user's choices and ask whether they are ready to enter the interview room. The user must reply with a positive response such as 'ready' to complete the interview configuration.
 
-After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, return them all to the user to get a confirmation.`,
+After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, return them all to the user to get a confirmation.
+
+If the user confirm all the info provided is correct, then output them in JSON format: {required_variables}.`,
       required_variables: [
         'job_description',
         'resume',
