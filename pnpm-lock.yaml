@@ -14,6 +14,9 @@ dependencies:
   ai:
     specifier: ^2.2.25
     version: 2.2.25(react@18.2.0)(solid-js@1.8.5)(svelte@4.2.2)(vue@3.3.7)
+  best-effort-json-parser:
+    specifier: ^1.0.1
+    version: 1.0.1
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -1031,6 +1034,10 @@ packages:
 
   /base-64@0.1.0:
     resolution: {integrity: sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==}
+    dev: false
+
+  /best-effort-json-parser@1.0.1:
+    resolution: {integrity: sha512-Fbne5nLqmDQXUmHf6cxeFAAIcsiFaSbCBoK0Rt+wgWv/7SacNhViNeXnuf0H0wXupwW5Io8FfB1FHPUfZujwwg==}
     dev: false
 
   /binary-extensions@2.2.0:

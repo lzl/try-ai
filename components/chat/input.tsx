@@ -1,5 +1,6 @@
 import * as React from 'react'
 import type { ChatRequestOptions, CreateMessage, Message } from 'ai'
+import { Loader2Icon } from 'lucide-react'
 
 import TextareaAutosize from '@/components/ui/textarea-autosize'
 
@@ -36,10 +37,17 @@ export default function ChatInput({
   }
 
   return (
-    <TextareaAutosize
-      input={input}
-      onInput={handleInputChange}
-      onSubmit={onSubmit}
-    />
+    <div className="relative">
+      <TextareaAutosize
+        input={input}
+        onInput={handleInputChange}
+        onSubmit={onSubmit}
+      />
+      {isLoading && (
+        <div className="absolute right-2 top-0 flex h-10 items-center text-slate-500">
+          <Loader2Icon className="animate-spin" />
+        </div>
+      )}
+    </div>
   )
 }

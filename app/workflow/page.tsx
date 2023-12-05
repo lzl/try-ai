@@ -1,12 +1,14 @@
 'use client'
 
 import * as React from 'react'
+import { Message } from 'ai'
 import { useChat } from 'ai/react'
 
 import { IConfig } from '@/lib/types'
 import { getCode } from '@/lib/utils'
+import { safePartialParse } from '@/lib/utils/parser'
 import ChatInput from '@/components/chat/input'
-import ChatList from '@/components/chat/list'
+import Markdown from '@/components/chat/markdown'
 
 const code = getCode()
 
@@ -125,4 +127,32 @@ function Chat() {
       <ChatList messages={messages} />
     </div>
   )
+}
+
+function ChatList({ messages }: { messages: Message[] }) {
+  if (messages.length === 0) return null
+
+  return (
+    <ul className="flex flex-col-reverse gap-8">
+      {messages.map((m, idx) => (
+        <li key={idx}>
+          <strong>{m.role}:</strong>
+          <div className="prose">
+            <ChatContent content={m.content} />
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function ChatContent({ content }: { content: any }) {
+  const json = safePartialParse(content)
+
+  if (json) {
+    const { assistant_response } = json
+    return <Markdown>{assistant_response}</Markdown>
+  }
+
+  return <Markdown>{content}</Markdown>
 }
