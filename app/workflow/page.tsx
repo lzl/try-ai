@@ -69,9 +69,22 @@ Step 5 - Guide the user to choose the number of questions, with the options bein
 Step 6 - Guide the user to choose the difficulty level of the questions, with options being junior, intermediate, and senior. The user must select one option to move to the next step.
 Step 7 - Guide the user to choose the interviewer's interviewing style, with options being friendly and open, or formal and rigorous. The user must select one option to proceed to the next step.
 
-After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, return them all to the user to get a confirmation.
+After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, put all of them into 'assistant_response', return it to the user to get a confirmation.
 
-If the user confirm all the info provided is correct, then output them in JSON format: {required_variables}.`,
+[IMPORTANT] return in json mode.
+
+json structure:
+
+{ "assistant_response": "your response", "variables": {required_variables}, "done": false|true }
+
+here is the rules:
+
+- 'assistant_response' is the COMPLETE response you want to return to the user, do not end the response with semicolon.
+- 'variables' is the list of variables and the 'value' field should be filled based on the info collected from user and your correction (but not from your question).
+- remove description field from 'variables' before response.
+- remove the item from 'variables' which 'value' field is empty (such as empty string or array) before response.
+- 'done' is a boolean value, true means the user has confirmed the response, false means the user has not confirmed the response.
+- check the rules again before response.`,
       required_variables: [
         'job_description',
         'resume',

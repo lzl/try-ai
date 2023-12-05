@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
       model,
       stream: true,
       messages,
+      response_format: { type: 'json_object' },
     })
 
     const stream = OpenAIStream(response)
