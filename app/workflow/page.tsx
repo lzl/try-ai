@@ -122,6 +122,10 @@ function Chat() {
     return f[f.length - 1]?.content
   }, [messages])
 
+  const currentWorkflowStep = React.useMemo(() => {
+    return config.workflow.find((w) => !w.done)
+  }, [config])
+
   React.useEffect(() => {
     const json = safePartialParse(latestAssistantResponse)
     if (json) {
@@ -159,10 +163,13 @@ function Chat() {
         />
         <ChatList messages={messages} />
       </div>
-      <div className="max-w-sm border p-4">
-        <pre className="overflow-auto">
-          {JSON.stringify(config.variables, null, 2)}
-        </pre>
+      <div className="flex flex-col gap-4">
+        <div>Done: {currentWorkflowStep?.done ? '✅' : '❌'}</div>
+        <div className="max-w-sm border p-4">
+          <pre className="overflow-auto">
+            {JSON.stringify(config.variables, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
   )
