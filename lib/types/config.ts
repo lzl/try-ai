@@ -1,5 +1,5 @@
 export interface IConfig {
-  version: 0
+  version: number
   variables: IVariable[]
   workflow: IStep[]
 }
