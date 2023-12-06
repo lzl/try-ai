@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Editor from '@monaco-editor/react'
 import { Message } from 'ai'
 import { useChat } from 'ai/react'
 import { useImmer } from 'use-immer'
@@ -76,7 +77,13 @@ function Chat() {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <div className="col-span-2 flex flex-col gap-4 rounded-md border p-4">
+      <div className="col-span-1">
+        <Editor
+          defaultLanguage="json"
+          defaultValue={JSON.stringify(CONFIG, null, 2)}
+        />
+      </div>
+      <div className="col-span-1 flex flex-col gap-4 rounded-md border p-4">
         <ChatInput
           input={input}
           handleInputChange={handleInputChange}
