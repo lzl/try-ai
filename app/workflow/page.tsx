@@ -75,8 +75,8 @@ function Chat() {
   }, [latestAssistantResponse, setConfig])
 
   return (
-    <div className="flex gap-4">
-      <div className="flex flex-1 shrink-0 flex-col gap-4 rounded-md border p-4">
+    <div className="grid grid-cols-3 gap-4">
+      <div className="col-span-2 flex flex-col gap-4 rounded-md border p-4">
         <ChatInput
           input={input}
           handleInputChange={handleInputChange}
@@ -86,9 +86,9 @@ function Chat() {
         />
         <ChatList messages={messages} />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="col-span-1 flex flex-col gap-4">
         <div>Done: {currentWorkflowStep?.done ? '✅' : '❌'}</div>
-        <div className="max-w-sm border p-4">
+        <div className="border p-4">
           <pre className="overflow-auto">
             {JSON.stringify(config.variables, null, 2)}
           </pre>
