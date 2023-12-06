@@ -115,7 +115,7 @@ function ChatList({ messages }: { messages: Message[] }) {
   )
 }
 
-function ChatContent({ content }: { content: any }) {
+function ChatContent({ content }: { content: string }) {
   const json = safePartialParse(content)
 
   if (json) {
@@ -124,6 +124,8 @@ function ChatContent({ content }: { content: any }) {
       return <Markdown>{assistant_response}</Markdown>
     }
   }
+
+  if (content.startsWith('{')) return null
 
   return <Markdown>{content}</Markdown>
 }
