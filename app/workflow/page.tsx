@@ -4,6 +4,7 @@ import * as React from 'react'
 import Editor from '@monaco-editor/react'
 import { Message } from 'ai'
 import { useChat } from 'ai/react'
+import { isArray, isEmpty } from 'lodash'
 import { useImmer } from 'use-immer'
 
 import { IConfig } from '@/lib/types'
@@ -18,7 +19,7 @@ const code = getCode()
 
 export default function Page() {
   return (
-    <div className="p-4">
+    <div className="min-h-screen">
       <Chat />
     </div>
   )
@@ -36,6 +37,9 @@ function Chat() {
         code,
         config,
       },
+      onFinish: (message) => {
+        console.log('onFinish:', message)
+      },
       onError: (err) => {
         alert(err.message)
       },
@@ -46,9 +50,10 @@ function Chat() {
     return f[f.length - 1]?.content
   }, [messages])
 
-  const currentWorkflowStep = React.useMemo(() => {
-    return config.workflow.find((w) => !w.done)
-  }, [config])
+  const filledVariables = React.useMemo(
+    () => config.variables.filter((v) => !isEmpty(v.value)),
+    [config.variables]
+  )
 
   React.useEffect(() => {
     const json = safePartialParse(latestAssistantResponse)
@@ -76,11 +81,14 @@ function Chat() {
   }, [latestAssistantResponse, setConfig])
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-4 p-4">
       <div className="col-span-1">
         <Editor
+          className="overflow-hidden rounded-md border"
+          height="calc(100vh - 40px)"
           defaultLanguage="json"
           defaultValue={JSON.stringify(CONFIG, null, 2)}
+          options={{ wordWrap: 'on' }}
         />
       </div>
       <div className="col-span-1 flex flex-col gap-4 rounded-md border p-4">
@@ -94,11 +102,28 @@ function Chat() {
         <ChatList messages={messages} />
       </div>
       <div className="col-span-1 flex flex-col gap-4">
-        <div>Done: {currentWorkflowStep?.done ? '✅' : '❌'}</div>
-        <div className="border p-4">
-          <pre className="overflow-auto">
-            {JSON.stringify(config.variables, null, 2)}
-          </pre>
+        {filledVariables.length > 0 && (
+          <div className="rounded-md border p-4">
+            <ul className="prose">
+              {filledVariables.map((v, idx) => (
+                <li key={idx}>
+                  <span className="mr-2 font-medium">{v.key}:</span>
+                  <span>{renderVariableValue(v.value)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div className="rounded-md border p-4">
+          <ol className="prose">
+            {config.workflow.map((w, idx) => (
+              <li key={idx} className="line-clamp-3">
+                <span className="mr-2">Step {idx + 1}:</span>
+                {w.done && <span className="mr-2">✅</span>}
+                <span>{w.system_prompt}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </div>
@@ -132,7 +157,13 @@ function ChatContent({ content }: { content: string }) {
     }
   }
 
-  if (content.startsWith('{')) return null
-
   return <Markdown>{content}</Markdown>
+}
+
+function renderVariableValue(value: any) {
+  if (isArray(value)) {
+    return value.join(', ')
+  }
+
+  return value
 }
