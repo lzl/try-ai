@@ -47,7 +47,7 @@ export default function ChatInput({
         placeholder={placeholder}
       />
       {isLoading && (
-        <div className="absolute right-2 top-0 flex h-10 items-center text-slate-500">
+        <div className="absolute right-2 top-0 flex h-10 items-center text-slate-400">
           <Loader2Icon className="animate-spin" />
         </div>
       )}
