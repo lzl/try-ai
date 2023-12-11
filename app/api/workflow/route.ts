@@ -14,10 +14,25 @@ const openai = new OpenAI({
 
 // gpt-3.5-turbo-1106
 // gpt-4-1106-preview
-const model = 'gpt-4-1106-preview'
+const model = 'gpt-3.5-turbo-1106'
 
-const variable_rules =
-  "\n\nAfter all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, put all of them into 'assistant_response', return it to the user to get a confirmation.\n\n[IMPORTANT] return in json mode.\n\njson structure:\n\n{ \"assistant_response\": \"your response\", \"variables\": {required_variables}, \"done\": false|true }\n\nhere is the rules:\n\n- 'assistant_response' is the COMPLETE response you want to return to the user, do not end the response with semicolon.\n- 'variables' is the list of variables and the 'value' field should be filled based on the info collected from user and your correction (but not from your question).\n- remove description field from 'variables' before response.\n- remove the item from 'variables' which 'value' field is empty (such as empty string or array) before response.\n- 'done' is a boolean value, true means the user has confirmed the response, false means the user has not confirmed the response.\n- check the rules again before response."
+const variable_rules = `
+After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, put all of them into 'assistant_response', return it to the user to get a confirmation.
+
+[IMPORTANT] return in json mode.
+
+json structure:
+
+{ "assistant_response": "your response", "variables": {required_variables}, "done": false|true }
+
+here is the rules:
+
+- 'assistant_response' is the COMPLETE response you want to return to the user, do not end the response with semicolon.
+- 'variables' is the list of variables and the 'value' field should be filled based on the info collected from user and your correction (but not from your question).
+- remove description field from 'variables' before response.
+- remove the item from 'variables' which 'value' field is empty (such as empty string or array) before response.
+- 'done' is a boolean value, true means the user has confirmed the response, false means the user has not confirmed the response.
+- check the rules again before response.`
 
 export async function POST(req: NextRequest) {
   try {
