@@ -72,6 +72,15 @@ export async function POST(req: NextRequest) {
           )
         }
       }
+
+      for (const v of variables) {
+        const key = `{${v.key}}`
+        const find = instruction.includes(key)
+        if (find) {
+          instruction = instruction.replaceAll(key, JSON.stringify(v.value))
+        }
+      }
+
       console.log('instruction:', instruction)
       systemMessages.push({
         role: 'system',
