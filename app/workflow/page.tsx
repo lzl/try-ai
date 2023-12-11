@@ -98,6 +98,7 @@ function Chat() {
           append={append}
           setInput={setInput}
           isLoading={isLoading}
+          placeholder="Type your message here..."
         />
         <ChatList messages={messages} />
       </div>

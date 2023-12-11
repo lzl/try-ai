@@ -17,6 +17,7 @@ interface IProps {
   ) => Promise<string | null | undefined>
   setInput: React.Dispatch<React.SetStateAction<string>>
   isLoading: boolean
+  placeholder?: string
 }
 
 export default function ChatInput({
@@ -25,6 +26,7 @@ export default function ChatInput({
   append,
   setInput,
   isLoading,
+  placeholder,
 }: IProps) {
   const onSubmit = (content: string) => {
     const q = content.trim()
@@ -41,7 +43,8 @@ export default function ChatInput({
       <TextareaAutosize
         input={input}
         onInput={handleInputChange}
-        onSubmit={onSubmit}
+        handleSubmit={onSubmit}
+        placeholder={placeholder}
       />
       {isLoading && (
         <div className="absolute right-2 top-0 flex h-10 items-center text-slate-500">
