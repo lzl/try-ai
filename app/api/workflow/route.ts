@@ -29,6 +29,7 @@ here is the rules:
 
 - 'assistant_response' is the COMPLETE response you want to return to the user, do not end the response with semicolon.
 - 'variables' is the list of variables and the 'value' field should be filled based on the info collected from user and your correction (but not from your question).
+- only the variables related with last two messages should be put into 'variables'.
 - remove description field from 'variables' before response.
 - remove the item from 'variables' which 'value' field is empty (such as empty string or array) before response.
 - 'done' is a boolean value, true means the user has confirmed the response, false means the user has not confirmed the response.
