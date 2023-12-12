@@ -13,7 +13,7 @@ import { safePartialParse } from '@/lib/utils/parser'
 import ChatInput from '@/components/chat/input'
 import Markdown from '@/components/chat/markdown'
 
-import CONFIG from './config.json'
+import CONFIG from './config'
 
 const code = getCode()
 
