@@ -16,10 +16,7 @@ const openai = new OpenAI({
 // gpt-4-1106-preview
 const model = 'gpt-3.5-turbo-1106'
 
-const variable_rules = `
-After all steps are completed, check whether the user has provided all the required information. If not, return to the corresponding step and prompt the user to provide the missing information. If all the information is provided, put all of them into 'assistant_response', return it to the user to get a confirmation.
-
-[IMPORTANT] return in json mode.
+const variable_rules = `[IMPORTANT] return in json mode.
 
 json structure:
 
@@ -32,7 +29,7 @@ here is the rules:
 - only the variables related with last two messages should be put into 'variables'.
 - remove description field from 'variables' before response.
 - remove the item from 'variables' which 'value' field is empty (such as empty string or array) before response.
-- 'done' is a boolean value, true means the user has confirmed the response, false means the user has not confirmed the response.
+- 'done' is a boolean value, true means all of the steps are completed, false means there are some steps not completed.
 - check the rules again before response.`
 
 export async function POST(req: NextRequest) {
