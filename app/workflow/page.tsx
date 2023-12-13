@@ -27,7 +27,6 @@ export default function Page() {
 
 function Chat() {
   const [config, setConfig] = useImmer<IConfig>(CONFIG)
-  console.log('config:', config)
 
   const { messages, input, handleInputChange, append, setInput, isLoading } =
     useChat({
