@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 
 import './globals.css'
 
+export const runtime = 'edge'
+
 export const metadata: Metadata = {
-  title: 'Mini Builder',
+  title: 'Try AI',
 }
 
 export default function RootLayout({
